@@ -2,8 +2,20 @@ const { orderModel } = require("../models/ordersModel");
 
 const orderController = {
   getAll: (req, res) => {
+    const { start, end, limit, sort } = req.query;
+
+    const dateRange = {};
+    if (start) dateRange.date = { $gte: start };
+    if (end) dateRange.date = { ...dateRange.date, $lte: end };
+    const sortOrder = sort === "asc" ? 1 : -1;
+
     orderModel
-      .find({ isDeleted: false })
+      .find({
+        isDeleted: false,
+        date: dateRange,
+      })
+      .limit(limit)
+      .sort({ productPrice: sortOrder })
       .populate("categoryId")
       .populate({ path: "buyerId", populate: { path: "buyerAddress" } })
       .exec((err, docs) => {
