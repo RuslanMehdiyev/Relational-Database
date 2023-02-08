@@ -3,16 +3,20 @@ const { orderModel } = require("../models/ordersModel");
 const orderController = {
   getAll: (req, res) => {
     const { start, end, limit, sort } = req.query;
-
+    console.log(start);
+    console.log(end);
     const dateRange = {};
-    if (start) dateRange.date = { $gte: start };
-    if (end) dateRange.date = { ...dateRange.date, $lte: end };
+    if (start && end)
+      dateRange.date = { $gte: new Date(start), $lte: new Date(end) };
+    else if (start) dateRange.date = { $gte: new Date(start) };
+    else if (end) dateRange.date = { $lte: new Date(end) };
+
     const sortOrder = sort === "asc" ? 1 : -1;
 
     orderModel
       .find({
         isDeleted: false,
-        date: dateRange,
+        ...dateRange,
       })
       .limit(limit)
       .sort({ productPrice: sortOrder })
