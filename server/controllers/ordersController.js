@@ -7,12 +7,12 @@ const orderController = {
     console.log(end);
     const dateRange = {};
     if (start && end)
-      dateRange.date = { $gte: new Date(start), $lte: new Date(end) };
-    else if (start) dateRange.date = { $gte: new Date(start) };
-    else if (end) dateRange.date = { $lte: new Date(end) };
+      dateRange.orderDate = { $gte: new Date(start), $lte: new Date(end) };
+    else if (start) dateRange.orderDate = { $gte: new Date(start) };
+    else if (end) dateRange.orderDate = { $lte: new Date(end) };
 
     const sortOrder = sort === "asc" ? 1 : -1;
-
+    console.log(dateRange);
     orderModel
       .find({
         isDeleted: false,
